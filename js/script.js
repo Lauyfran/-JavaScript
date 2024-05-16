@@ -19,7 +19,7 @@ function renderProductGrid() {
         <div class="card-body">
           <h5 class="card-title">${product.name}</h5>
           <p class="card-text">Precio: $${product.price.toFixed(2)}</p>
-          <button class="btn btn-primary" onclick="addToCart(${i})">Agregar al Carrito</button>
+          <button class="btn btn-primary add-to-cart-btn" data-index="${i}">Agregar al Carrito</button>
         </div>
       </div>
     `;
@@ -28,8 +28,6 @@ function renderProductGrid() {
     i++;
   }
 }
-
-const cartItems = [];
 
 function addToCart(index) {
   const product = products[index];
@@ -64,24 +62,45 @@ function renderCart() {
   cartTableBody.innerHTML = '';
   let totalPrice = 0;
 
-  for (let i = 0; i < cartItems.length; i++) {
-    const item = cartItems[i];
+  cartItems.forEach((item, index) => {
     const row = document.createElement('tr');
 
     row.innerHTML = `
       <td>${item.name}</td>
       <td>$${item.price.toFixed(2)}</td>
-      <td>${item.quantity}</td>
+      <td>
+        <input type="number" min="1" value="${item.quantity}" class="quantity-input" data-index="${index}">
+      </td>
       <td>$${(item.price * item.quantity).toFixed(2)}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${i})">Eliminar</button></td>
+      <td><button class="btn btn-danger btn-sm remove-from-cart-btn" data-index="${index}">Eliminar</button></td>
     `;
 
     cartTableBody.appendChild(row);
     totalPrice += item.price * item.quantity;
-  }
+  });
 
   totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
   checkoutBtn.disabled = cartItems.length === 0;
 }
 
+// Event listener para agregar al carrito
+document.getElementById('product-grid').addEventListener('click', event => {
+  if (event.target.classList.contains('add-to-cart-btn')) {
+    const index = parseInt(event.target.getAttribute('data-index'));
+    addToCart(index);
+  }
+});
+
+// Event listener para eliminar del carrito
+document.getElementById('cart-table-body').addEventListener('click', event => {
+  if (event.target.classList.contains('remove-from-cart-btn')) {
+    const index = parseInt(event.target.getAttribute('data-index'));
+    removeFromCart(index);
+  }
+});
+
+// Array para almacenar los elementos del carrito
+const cartItems = [];
+
+// Llamada a la función para renderizar los productos en la página
 renderProductGrid();
