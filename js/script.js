@@ -5,6 +5,17 @@ const products = [
   { name: 'Chaqueta', price: 799.99 }
 ];
 
+let cartItems = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const storedCartItems = localStorage.getItem('cartItems');
+  if (storedCartItems) {
+    cartItems = JSON.parse(storedCartItems);
+  }
+  renderCart();
+  renderProductGrid();
+});
+
 function renderProductGrid() {
   const productGrid = document.getElementById('product-grid');
   let i = 0;
@@ -39,6 +50,7 @@ function addToCart(index) {
     cartItems.push({ ...product, quantity: 1 });
   }
 
+  saveCartToLocalStorage();
   renderCart();
 }
 
@@ -51,6 +63,7 @@ function removeFromCart(index) {
     cartItems.splice(index, 1);
   }
   
+  saveCartToLocalStorage();
   renderCart();
 }
 
@@ -83,6 +96,10 @@ function renderCart() {
   checkoutBtn.disabled = cartItems.length === 0;
 }
 
+function saveCartToLocalStorage() {
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+}
+
 // Event listener para agregar al carrito
 document.getElementById('product-grid').addEventListener('click', event => {
   if (event.target.classList.contains('add-to-cart-btn')) {
@@ -98,9 +115,3 @@ document.getElementById('cart-table-body').addEventListener('click', event => {
     removeFromCart(index);
   }
 });
-
-// Array para almacenar los elementos del carrito
-const cartItems = [];
-
-// Llamada a la función para renderizar los productos en la página
-renderProductGrid();
