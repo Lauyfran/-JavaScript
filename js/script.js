@@ -1,27 +1,35 @@
-const products = [
-  { name: 'Camisa', price: 399.99 },
-  { name: 'Pantalón', price: 499.99 },
-  { name: 'Zapatos', price: 599.99 },
-  { name: 'Chaqueta', price: 799.99 }
-];
-
+let products = [];
 let cartItems = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+  fetchProducts();
   const storedCartItems = localStorage.getItem('cartItems');
   if (storedCartItems) {
     cartItems = JSON.parse(storedCartItems);
   }
   renderCart();
-  renderProductGrid();
 });
+
+function fetchProducts() {
+  fetch('data/data.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => {
+      products = data;
+      renderProductGrid();
+    })
+    .catch(error => console.error('Error loading products:', error));
+}
 
 function renderProductGrid() {
   const productGrid = document.getElementById('product-grid');
-  let i = 0;
+  productGrid.innerHTML = ''; // Limpiar el grid antes de renderizar
 
-  while (i < products.length) {
-    const product = products[i];
+  products.forEach((product, index) => {
     const productCard = document.createElement('div');
     productCard.className = 'col-md-3 mb-4';
 
@@ -30,14 +38,13 @@ function renderProductGrid() {
         <div class="card-body">
           <h5 class="card-title">${product.name}</h5>
           <p class="card-text">Precio: $${product.price.toFixed(2)}</p>
-          <button class="btn btn-primary add-to-cart-btn" data-index="${i}">Agregar al Carrito</button>
+          <button class="btn btn-primary add-to-cart-btn" data-index="${index}">Agregar al Carrito</button>
         </div>
       </div>
     `;
 
     productGrid.appendChild(productCard);
-    i++;
-  }
+  });
 }
 
 function addToCart(index) {
@@ -114,4 +121,9 @@ document.getElementById('cart-table-body').addEventListener('click', event => {
     const index = parseInt(event.target.getAttribute('data-index'));
     removeFromCart(index);
   }
+});
+
+// Event listener para proceder al pago
+document.getElementById('checkout-btn').addEventListener('click', () => {
+  alert('Proximamente');
 });
