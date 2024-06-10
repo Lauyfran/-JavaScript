@@ -86,14 +86,14 @@ function renderCart() {
     const row = document.createElement('tr');
 
     row.innerHTML = `
-      <td>${item.name}</td>
-      <td>$${item.price.toFixed(2)}</td>
-      <td>
-        <input type="number" min="1" value="${item.quantity}" class="quantity-input" data-index="${index}">
-      </td>
-      <td>$${(item.price * item.quantity).toFixed(2)}</td>
-      <td><button class="btn btn-danger btn-sm remove-from-cart-btn" data-index="${index}">Eliminar</button></td>
-    `;
+    <td>${item.name}</td>
+    <td>$${item.price.toFixed(2)}</td>
+    <td>
+      <input type="number" min="1" value="${item.quantity}" class="quantity-input" data-index="${index}">
+    </td>
+    <td>$${(item.price * item.quantity).toFixed(2)}</td>
+    <td><button class="btn btn-danger btn-sm remove-from-cart-btn" data-index="${index}">Eliminar</button></td>
+  `;
 
     cartTableBody.appendChild(row);
     totalPrice += item.price * item.quantity;
@@ -106,7 +106,6 @@ function renderCart() {
 function saveCartToLocalStorage() {
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
 }
-
 // Event listener para agregar al carrito
 document.getElementById('product-grid').addEventListener('click', event => {
   if (event.target.classList.contains('add-to-cart-btn')) {
@@ -125,5 +124,5 @@ document.getElementById('cart-table-body').addEventListener('click', event => {
 
 // Event listener para proceder al pago
 document.getElementById('checkout-btn').addEventListener('click', () => {
-  alert('Proximamente');
+  swal("Proximamente");
 });
